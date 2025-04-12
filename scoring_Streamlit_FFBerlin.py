@@ -302,7 +302,7 @@ if st.button("Process Data"):
         df['VC Score'] = df.apply(score_vc, axis=1)
         df['Funding Valuation Score'] = df.apply(score_funding_valuation, axis=1)
         df['Raised Score'] = df.apply(score_raised, axis=1)
-        # df['Recent Financing Score'] = df.apply(lambda x: recent_financing(x, '2024-11-18'), axis=1)
+        df['Recent Financing Score'] = df.apply(lambda x: recent_financing(x, '2024-11-18'), axis=1)
         df['HQ Location Score'] = df.apply(check_hq_location, axis=1)
         df['Company Growth Score'] = df.apply(evaluate_company_growth, axis=1)
         df['Emerging and Verticals Score'] = df.apply(score_emerging_and_verticals, axis=1)
@@ -334,3 +334,4 @@ if st.button("Process Data"):
         )
     else:
         st.warning("Please upload both the company data file and the Top VCs file.")
+
