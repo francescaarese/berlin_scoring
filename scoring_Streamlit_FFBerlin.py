@@ -176,7 +176,7 @@ def recent_financing(company, reference_date_str):
 #             return 10
 #     return 0
 
-def score_hq_region_country(company):
+def check_hq_location(company):
     region = str(company.get('HQ Global Region', '')).strip().lower()
     country = str(company.get('HQ Country/Territory/Region', '')).strip().lower()
 
