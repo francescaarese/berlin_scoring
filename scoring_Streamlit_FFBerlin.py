@@ -145,36 +145,29 @@ def score_raised(company):
 
 
 def recent_financing(company, reference_date_str):
-    # Parse the reference date
     reference_date = datetime.strptime(reference_date_str, '%Y-%m-%d')
-    # Check if 'Last Financing Date' is within the last 12 months
-    last_financing_date = pd.to_datetime(company['Last Financing Date'], errors='coerce')
+    
+    raw_date = company['Last Financing Date']
+    
+    # Convert from Excel serial if it's a float
+    if isinstance(raw_date, (float, int)):
+        last_financing_date = pd.to_datetime(raw_date, origin='1899-12-30', unit='D')
+    else:
+        last_financing_date = pd.to_datetime(raw_date, errors='coerce')
+    
     recent_raise = 0
     large_financing = 0
 
-    if pd.notna(last_financing_date) and last_financing_date > reference_date - timedelta(days=365):
-        # 1 point for raising in the last 12 months
+    if pd.notna(last_financing_date) and last_financing_date > reference_date - timedelta(days=730):
         recent_raise = 5
 
-        # Check if 'Last Financing Size' > 500
         last_financing_size = company.get('Last Financing Size', 0)
         if pd.notna(last_financing_size) and last_financing_size >= 50:
             large_financing = 5
 
-    # Combine points
     return recent_raise + large_financing
 
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ DA SISTEMARE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# def check_hq_location(company):
-#     # Check if 'HQ Global Region' contains 'Asia' or 'Africa'
-#     hq_region = company['HQ Country/Territory/Region']
-#     if isinstance(hq_region, str):  # Ensure it's a string before checking
-#         if 'France' or 'Germany' in hq_region:
-#             return 4
-#         elif 'Africa' in hq_region:
-#             return 10
-#     return 0
 
 def check_hq_location(company):
     region = str(company.get('HQ Global Region', '')).strip().lower()
